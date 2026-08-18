@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SwiftLyft - Premium luxury transportation service. Book your ride with style and comfort. Available in Johannesburg and Cape Town.">
+  <meta name="keywords" content="luxury transportation, premium taxi, chauffeur service, Johannesburg, Cape Town, South Africa">
+  <meta name="author" content="SwiftLyft">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://swiftlyft.co.za/">
+  <meta property="og:title" content="SwiftLyft - Your Journey, Elevated">
+  <meta property="og:description" content="Premium luxury transportation service. Book your ride with style and comfort.">
+  <meta property="og:image" content="icons/Icon-512.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://swiftlyft.co.za/">
+  <meta property="twitter:title" content="SwiftLyft - Your Journey, Elevated">
+  <meta property="twitter:description" content="Premium luxury transportation service. Book your ride with style and comfort.">
+  <meta property="twitter:image" content="icons/Icon-512.png">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SwiftLyft">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="shortcut icon" type="image/png" href="favicon.png"/>
+
+  <!-- Preconnect to external domains for better performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Loading animation styles -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow: hidden;
+    }
+    
+    .loading-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    
+    .logo {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+      box-shadow: 0 20px 40px rgba(245, 158, 11, 0.3);
+      animation: pulse 2s infinite;
+    }
+    
+    .logo-icon {
+      width: 60px;
+      height: 60px;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.22.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>') no-repeat center;
+      background-size: contain;
+    }
+    
+    .app-name {
+      font-size: 36px;
+      font-weight: bold;
+      color: white;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+    
+    .tagline {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.8);
+      letter-spacing: 1px;
+    }
+    
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-top: 30px;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      margin-top: 20px;
+    }
+    
+    /* Hide loading screen when Flutter is ready */
+    .flutter-ready {
+      opacity: 0;
+      transition: opacity 0.5s ease-out;
+      pointer-events: none;
+    }
+  </style>
+
+  <title>SwiftLyft - Your Journey, Elevated</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <!-- Loading screen -->
+  <div id="loading" class="loading-container">
+    <div class="logo">
+      <div class="logo-icon"></div>
+    </div>
+    <div class="app-name">SwiftLyft</div>
+    <div class="tagline">Your Journey, Elevated</div>
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading your premium experience...</div>
+  </div>
+
+  <script src="flutter_bootstrap.js" async></script>
+  
+  <!-- Hide loading screen when Flutter is ready -->
+  <script>
+    window.addEventListener('load', function() {
+      // Listen for Flutter ready event
+      window.addEventListener('flutter-first-frame', function() {
+        const loading = document.getElementById('loading');
+        loading.classList.add('flutter-ready');
+        setTimeout(() => {
+          loading.style.display = 'none';
+        }, 500);
+      });
+      
+      // Register service worker for PWA functionality
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function(registration) {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          })
+          .catch(function(err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      }
+    });
+  </script>
+</body>
+</html>

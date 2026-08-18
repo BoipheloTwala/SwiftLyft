@@ -1,0 +1,881 @@
+# SwiftLyft Authentication API Testing
+# Use this file with REST Client extension in VS Code or similar tools
+
+### Variables
+@baseUrl = http://localhost:3000/api
+@email = test@example.com
+@password = TestPassword123
+@accessToken = your_access_token_here
+@refreshToken = your_refresh_token_here
+@userId = your_user_id_here
+@bookingId = your_booking_id_here
+@paymentMethodId = your_payment_method_id_here
+@paymentId = your_payment_id_here
+@driverId = your_driver_id_here
+@locationId = your_location_id_here
+
+### 1. Health Check
+GET {{baseUrl}}/health
+
+### 2. Register New User
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "name": "Test User",
+  "phoneNumber": "+27123456789"
+}
+
+### 3. Login User
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### 4. Get Current User Profile (Protected Route)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{accessToken}}
+
+### 5. Get User Profile
+GET {{baseUrl}}/users/profile
+Authorization: Bearer {{accessToken}}
+
+### 6. Update User Profile
+PUT {{baseUrl}}/users/profile
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Updated Test User",
+  "phoneNumber": "+27987654321"
+}
+
+### 7. Upload Profile Picture
+POST {{baseUrl}}/users/upload-avatar
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "profileImageUrl": "https://example.com/avatar.jpg"
+}
+
+### 8. Add Saved Address
+POST {{baseUrl}}/users/addresses
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "label": "Home",
+  "address": "123 Main Street, Johannesburg, South Africa",
+  "coordinates": {
+    "latitude": -26.2041,
+    "longitude": 28.0473
+  },
+  "isDefault": true
+}
+
+### 9. Get Saved Addresses
+GET {{baseUrl}}/users/addresses
+Authorization: Bearer {{accessToken}}
+
+### 10. Get Loyalty Information
+GET {{baseUrl}}/users/loyalty
+Authorization: Bearer {{accessToken}}
+
+### 11. Get Referral Information
+GET {{baseUrl}}/users/referral
+Authorization: Bearer {{accessToken}}
+
+### 12. Get User Statistics
+GET {{baseUrl}}/users/stats
+Authorization: Bearer {{accessToken}}
+
+### 13. Change Password
+POST {{baseUrl}}/auth/change-password
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "currentPassword": "{{password}}",
+  "newPassword": "NewPassword123"
+}
+
+### 14. Refresh Token
+POST {{baseUrl}}/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### 15. Forgot Password
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "{{email}}"
+}
+
+### 16. Reset Password (use token from forgot password response)
+POST {{baseUrl}}/auth/reset-password/RESET_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "password": "NewResetPassword123"
+}
+
+### 17. Logout
+POST {{baseUrl}}/auth/logout
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### 18. Logout from All Devices
+POST {{baseUrl}}/auth/logout-all
+Authorization: Bearer {{accessToken}}
+
+### 19. Delete Account (be careful with this one!)
+DELETE {{baseUrl}}/users/account
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "password": "{{password}}"
+}
+
+###############################################
+# Error Testing Scenarios
+###############################################
+
+### Test Invalid Email Format
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "invalid-email",
+  "password": "TestPassword123",
+  "name": "Test User"
+}
+
+### Test Weak Password
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "weak@example.com",
+  "password": "123",
+  "name": "Test User"
+}
+
+### Test Login with Wrong Password
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "WrongPassword"
+}
+
+### Test Access Protected Route Without Token
+GET {{baseUrl}}/users/profile
+
+### Test Access with Invalid Token
+GET {{baseUrl}}/users/profile
+Authorization: Bearer invalid_token_here
+
+###############################################
+# Vehicle Management API Testing
+###############################################
+
+### 1. Get Available Vehicles by Location
+GET {{baseUrl}}/vehicles/available?latitude=-26.2041&longitude=28.0473&maxDistance=10000
+
+### 2. Get Available Vehicles with Category Filter
+GET {{baseUrl}}/vehicles/available?latitude=-26.2041&longitude=28.0473&category=sedan&passengerCount=4
+
+### 3. Get Available Vehicles with Features Filter
+GET {{baseUrl}}/vehicles/available?latitude=-26.2041&longitude=28.0473&features=wifi,airConditioning
+
+### 4. Get Vehicle Details by ID
+GET {{baseUrl}}/vehicles/VH001
+
+### 5. Get Vehicle Categories
+GET {{baseUrl}}/vehicles/categories
+
+### 6. Search Vehicles by Criteria
+GET {{baseUrl}}/vehicles/search?latitude=-26.2041&longitude=28.0473&category=sedan&passengerCount=4&features=wifi
+
+### 7. Search Vehicles by Make and Model
+GET {{baseUrl}}/vehicles/search?make=Toyota&model=Camry
+
+### 8. Search Vehicles by Price Range
+GET {{baseUrl}}/vehicles/search?priceMin=20&priceMax=50
+
+### 9. Check Vehicle Availability
+GET {{baseUrl}}/vehicles/VH001/availability
+
+### 10. Update Vehicle Status (Requires Authentication)
+PUT {{baseUrl}}/vehicles/VH001/status
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "status": "busy"
+}
+
+### 11. Update Vehicle Availability
+PUT {{baseUrl}}/vehicles/VH001/status
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "isAvailable": false,
+  "availableUntil": "2024-12-31T23:59:59.000Z"
+}
+
+### 12. Update Vehicle Working Hours
+PUT {{baseUrl}}/vehicles/VH001/status
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "workingHours": {
+    "start": "06:00",
+    "end": "22:00"
+  },
+  "operatingDays": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+}
+
+### 13. Get Vehicles by Driver ID
+GET {{baseUrl}}/vehicles/driver/DRV001
+
+### 14. Get Vehicle Statistics
+GET {{baseUrl}}/vehicles/stats
+
+### 15. Create New Vehicle (Requires Driver Authentication) - Frontend Compatible
+POST {{baseUrl}}/vehicles
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Mercedes S-Class",
+  "description": "Ultimate luxury sedan with premium features",
+  "make": "Mercedes",
+  "model": "S-Class",
+  "year": 2023,
+  "color": "Obsidian Black",
+  "licensePlate": "ABC123",
+  "category": "luxury",
+  "seatingCapacity": 4,
+  "basePrice": 1200,
+  "imageUrl": "https://example.com/mercedes_s_class.jpg",
+  "imageGallery": [
+    "https://example.com/mercedes_s_class_1.jpg",
+    "https://example.com/mercedes_s_class_2.jpg",
+    "https://example.com/mercedes_s_class_3.jpg"
+  ],
+  "features": [
+    "Leather Interior",
+    "Wi-Fi Hotspot",
+    "Climate Control",
+    "Premium Audio System",
+    "Massage Seats",
+    "Ambient Lighting",
+    "USB Charging",
+    "Privacy Tint",
+    "GPS Navigation",
+    "Bluetooth Connectivity"
+  ],
+  "badges": ["Top Choice", "Certified Chauffeurs"],
+  "specifications": {
+    "Engine": "3.0L V6",
+    "Transmission": "9-Speed Automatic",
+    "Fuel Type": "Petrol",
+    "Year": "2023",
+    "Mileage": "Low",
+    "Color": "Obsidian Black"
+  },
+  "currentLocation": {
+    "address": "Johannesburg, South Africa",
+    "coordinates": {
+      "latitude": -26.2041,
+      "longitude": 28.0473
+    },
+    "city": "Johannesburg",
+    "province": "Gauteng"
+  }
+}
+
+### 16. Update Vehicle Information - Frontend Compatible
+PUT {{baseUrl}}/vehicles/VH001
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Mercedes S-Class Premium",
+  "description": "Updated description for premium luxury sedan",
+  "color": "Pearl White",
+  "seatingCapacity": 5,
+  "basePrice": 1300,
+  "features": [
+    "Leather Interior",
+    "Wi-Fi Hotspot",
+    "Climate Control",
+    "Premium Audio System",
+    "Massage Seats",
+    "Ambient Lighting",
+    "USB Charging",
+    "Privacy Tint",
+    "GPS Navigation",
+    "Bluetooth Connectivity",
+    "Child Seat"
+  ],
+  "badges": ["Top Choice", "Certified Chauffeurs", "Premium Service"],
+  "specifications": {
+    "Engine": "3.0L V6",
+    "Transmission": "9-Speed Automatic",
+    "Fuel Type": "Petrol",
+    "Year": "2023",
+    "Mileage": "Low",
+    "Color": "Pearl White"
+  }
+}
+
+###############################################
+# Vehicle API Error Testing
+###############################################
+
+### Test Get Available Vehicles Without Location
+GET {{baseUrl}}/vehicles/available
+
+### Test Get Non-existent Vehicle
+GET {{baseUrl}}/vehicles/NONEXISTENT
+
+### Test Update Vehicle Status Without Authentication
+PUT {{baseUrl}}/vehicles/VH001/status
+Content-Type: application/json
+
+{
+  "status": "busy"
+}
+
+### Test Update Vehicle Status with Invalid Status
+PUT {{baseUrl}}/vehicles/VH001/status
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "status": "invalid_status"
+}
+
+### Test Create Vehicle with Missing Required Fields
+POST {{baseUrl}}/vehicles
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "make": "Toyota"
+}
+
+# ========================================
+# PAYMENT PROCESSING APIs
+# ========================================
+
+### Process Payment
+POST {{baseUrl}}/payments/process
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "bookingId": "{{bookingId}}",
+  "paymentMethodId": "{{paymentMethodId}}",
+  "amount": 150.00,
+  "description": "Payment for ride booking",
+  "metadata": {
+    "source": "mobile_app",
+    "version": "1.0.0"
+  }
+}
+
+### Get User Payment Methods
+GET {{baseUrl}}/payments/users/{{userId}}/payment-methods
+Authorization: Bearer {{accessToken}}
+
+### Add Payment Method - Credit Card
+POST {{baseUrl}}/payments/users/{{userId}}/payment-methods
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "type": "card",
+  "cardNumber": "1234567890123456",
+  "expiryMonth": "12",
+  "expiryYear": "2025",
+  "holderName": "Test User",
+  "brand": "visa",
+  "isDefault": true,
+  "encryptedData": "encrypted_card_data_placeholder"
+}
+
+### Add Payment Method - Debit Card
+POST {{baseUrl}}/payments/users/{{userId}}/payment-methods
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "type": "card",
+  "cardNumber": "5555555555554444",
+  "expiryMonth": "6",
+  "expiryYear": "2026",
+  "holderName": "Test User",
+  "brand": "mastercard",
+  "isDefault": false,
+  "encryptedData": "encrypted_card_data_placeholder"
+}
+
+### Add Payment Method - Digital Wallet
+POST {{baseUrl}}/payments/users/{{userId}}/payment-methods
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "type": "paypal",
+  "isDefault": false,
+  "encryptedData": "encrypted_wallet_data_placeholder"
+}
+
+### Remove Payment Method
+DELETE {{baseUrl}}/payments/payment-methods/{{paymentMethodId}}
+Authorization: Bearer {{accessToken}}
+
+### Get User Payment History
+GET {{baseUrl}}/payments/users/{{userId}}/payments
+Authorization: Bearer {{accessToken}}
+
+### Get User Payment History with Filters
+GET {{baseUrl}}/payments/users/{{userId}}/payments?status=completed&limit=10&page=1
+Authorization: Bearer {{accessToken}}
+
+### Get User Payment History by Date Range
+GET {{baseUrl}}/payments/users/{{userId}}/payments?dateFrom=2024-01-01&dateTo=2024-12-31
+Authorization: Bearer {{accessToken}}
+
+### Process Refund - Partial
+POST {{baseUrl}}/payments/{{paymentId}}/refund
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "amount": 50.00,
+  "reason": "Customer requested partial refund due to service issue"
+}
+
+### Process Refund - Full
+POST {{baseUrl}}/payments/{{paymentId}}/refund
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "reason": "Customer cancelled booking"
+}
+
+### Check Payment Status
+GET {{baseUrl}}/payments/{{paymentId}}/status
+Authorization: Bearer {{accessToken}}
+
+# ========================================
+# PAYMENT API ERROR TESTS
+# ========================================
+
+### Test Process Payment with Missing Fields
+POST {{baseUrl}}/payments/process
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "bookingId": "{{bookingId}}"
+}
+
+### Test Process Payment with Invalid Amount
+POST {{baseUrl}}/payments/process
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "bookingId": "{{bookingId}}",
+  "paymentMethodId": "{{paymentMethodId}}",
+  "amount": -10.00
+}
+
+### Test Add Payment Method with Missing Fields
+POST {{baseUrl}}/payments/users/{{userId}}/payment-methods
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "type": "card"
+}
+
+### Test Add Payment Method with Expired Card
+POST {{baseUrl}}/payments/users/{{userId}}/payment-methods
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "type": "card",
+  "cardNumber": "1234567890123456",
+  "expiryMonth": "1",
+  "expiryYear": "2020",
+  "holderName": "Test User",
+  "brand": "visa",
+  "encryptedData": "encrypted_card_data_placeholder"
+}
+
+### Test Refund with Missing Reason
+POST {{baseUrl}}/payments/{{paymentId}}/refund
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "amount": 50.00
+}
+
+### Test Refund with Excessive Amount
+POST {{baseUrl}}/payments/{{paymentId}}/refund
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "amount": 1000.00,
+  "reason": "Test excessive refund"
+}
+
+### Test Unauthorized Access to Payment Methods
+GET {{baseUrl}}/payments/users/other_user_id/payment-methods
+Authorization: Bearer {{accessToken}}
+
+### Test Unauthorized Access to Payment History
+GET {{baseUrl}}/payments/users/other_user_id/payments
+Authorization: Bearer {{accessToken}}
+
+# ===========================================
+# LOCATION & MAPPING APIs
+# ===========================================
+
+### 1. Geocode Address (Convert address to coordinates)
+POST {{baseUrl}}/location/geocode
+Content-Type: application/json
+
+{
+  "address": "123 Main Street, Johannesburg, South Africa",
+  "saveLocation": false
+}
+
+### 2. Geocode Address and Save Location
+POST {{baseUrl}}/location/geocode
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "address": "Sandton City, Johannesburg, South Africa",
+  "saveLocation": true,
+  "type": "pickup",
+  "category": "commercial"
+}
+
+### 3. Reverse Geocode (Convert coordinates to address)
+POST {{baseUrl}}/location/reverse-geocode
+Content-Type: application/json
+
+{
+  "latitude": -26.2041,
+  "longitude": 28.0473,
+  "saveLocation": false
+}
+
+### 4. Reverse Geocode and Save Location
+POST {{baseUrl}}/location/reverse-geocode
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "latitude": -26.2041,
+  "longitude": 28.0473,
+  "saveLocation": true,
+  "type": "dropoff",
+  "category": "residential"
+}
+
+### 5. Calculate Route Between Two Points
+POST {{baseUrl}}/location/route
+Content-Type: application/json
+
+{
+  "origin": {
+    "latitude": -26.2041,
+    "longitude": 28.0473
+  },
+  "destination": {
+    "latitude": -26.2141,
+    "longitude": 28.0573
+  },
+  "options": {
+    "profile": "driving-car",
+    "avoid": ["tolls"],
+    "avoidBorders": "none"
+  }
+}
+
+### 6. Calculate Route with Different Profile
+POST {{baseUrl}}/location/route
+Content-Type: application/json
+
+{
+  "origin": {
+    "latitude": -26.2041,
+    "longitude": 28.0473
+  },
+  "destination": {
+    "latitude": -26.2141,
+    "longitude": 28.0573
+  },
+  "options": {
+    "profile": "cycling-regular",
+    "averageSpeed": 15
+  }
+}
+
+### 7. Search for Places/Addresses
+GET {{baseUrl}}/location/places/search?q=Johannesburg&limit=10
+
+### 8. Search Places with Bounds
+GET {{baseUrl}}/location/places/search?q=restaurant&limit=5&bounds={"north":-26.0,"south":-26.3,"east":28.2,"west":27.8}
+
+### 9. Find Nearby Places
+GET {{baseUrl}}/location/places/nearby?latitude=-26.2041&longitude=28.0473&radius=1000&category=amenity&limit=20
+
+### 10. Find Nearby Restaurants
+GET {{baseUrl}}/location/places/nearby?latitude=-26.2041&longitude=28.0473&radius=500&category=restaurant&limit=10
+
+### 11. Check Service Area Coverage
+POST {{baseUrl}}/location/service-area
+Content-Type: application/json
+
+{
+  "latitude": -26.2041,
+  "longitude": 28.0473
+}
+
+### 12. Check Service Area Outside Coverage
+POST {{baseUrl}}/location/service-area
+Content-Type: application/json
+
+{
+  "latitude": -30.0,
+  "longitude": 25.0
+}
+
+### 13. Get Driver Real-time Location
+GET {{baseUrl}}/drivers/{{driverId}}/location
+Authorization: Bearer {{accessToken}}
+
+### 14. Get Driver Location (Admin Access)
+GET {{baseUrl}}/drivers/{{driverId}}/location
+Authorization: Bearer {{accessToken}}
+
+### 15. Save Custom Location
+POST {{baseUrl}}/location/save
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "latitude": -26.2041,
+  "longitude": 28.0473,
+  "address": {
+    "formatted": "My Home Address",
+    "streetNumber": "123",
+    "streetName": "Main Street",
+    "suburb": "Sandton",
+    "city": "Johannesburg",
+    "state": "Gauteng",
+    "country": "South Africa",
+    "postcode": "2196"
+  },
+  "type": "pickup",
+  "category": "residential",
+  "accuracy": 10,
+  "notes": "My home address",
+  "tags": ["home", "favorite"]
+}
+
+### 16. Get Location History
+GET {{baseUrl}}/location/history?limit=20&page=1
+Authorization: Bearer {{accessToken}}
+
+### 17. Get Location History by Type
+GET {{baseUrl}}/location/history?type=pickup&limit=10
+Authorization: Bearer {{accessToken}}
+
+### 18. Find Nearby Saved Locations
+GET {{baseUrl}}/location/nearby-saved?latitude=-26.2041&longitude=28.0473&radius=5&limit=20
+Authorization: Bearer {{accessToken}}
+
+### 19. Find Nearby Saved Locations by Type
+GET {{baseUrl}}/location/nearby-saved?latitude=-26.2041&longitude=28.0473&radius=10&type=pickup&limit=10
+Authorization: Bearer {{accessToken}}
+
+### 20. Update Saved Location
+PUT {{baseUrl}}/location/{{locationId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "type": "dropoff",
+  "category": "commercial",
+  "notes": "Updated location notes",
+  "tags": ["updated", "work"]
+}
+
+### 21. Delete Saved Location
+DELETE {{baseUrl}}/location/{{locationId}}
+Authorization: Bearer {{accessToken}}
+
+### 22. Test Geocoding Error Handling
+POST {{baseUrl}}/location/geocode
+Content-Type: application/json
+
+{
+  "address": ""
+}
+
+### 23. Test Reverse Geocoding Error Handling
+POST {{baseUrl}}/location/reverse-geocode
+Content-Type: application/json
+
+{
+  "latitude": "invalid",
+  "longitude": 28.0473
+}
+
+### 24. Test Route Calculation Error Handling
+POST {{baseUrl}}/location/route
+Content-Type: application/json
+
+{
+  "origin": {
+    "latitude": -26.2041
+  },
+  "destination": {
+    "latitude": -26.2141,
+    "longitude": 28.0573
+  }
+}
+
+### 25. Test Place Search Error Handling
+GET {{baseUrl}}/location/places/search
+
+### 26. Test Nearby Places Error Handling
+GET {{baseUrl}}/location/places/nearby?latitude=invalid&longitude=28.0473
+
+### 27. Test Service Area Check Error Handling
+POST {{baseUrl}}/location/service-area
+Content-Type: application/json
+
+{
+  "latitude": "invalid"
+}
+
+### 28. Test Driver Location Unauthorized Access
+GET {{baseUrl}}/drivers/other_driver_id/location
+Authorization: Bearer {{accessToken}}
+
+### 29. Test Save Location Without Authentication
+POST {{baseUrl}}/location/save
+Content-Type: application/json
+
+{
+  "latitude": -26.2041,
+  "longitude": 28.0473,
+  "address": {
+    "formatted": "Test Location"
+  }
+}
+
+### 30. Test Update Non-existent Location
+PUT {{baseUrl}}/location/non_existent_id
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "type": "pickup"
+}
+
+### 31. Validate Address for Flutter Frontend
+POST {{baseUrl}}/location/validate
+Content-Type: application/json
+
+{
+  "address": "123 Main Street, Johannesburg, South Africa"
+}
+
+### 32. Validate Coordinates for Flutter Frontend
+POST {{baseUrl}}/location/validate
+Content-Type: application/json
+
+{
+  "latitude": -26.2041,
+  "longitude": 28.0473
+}
+
+### 33. Get All Service Areas for Flutter
+GET {{baseUrl}}/location/service-areas
+
+### 34. Test Flutter-Compatible Geocoding Response
+POST {{baseUrl}}/location/geocode
+Content-Type: application/json
+
+{
+  "address": "Sandton City, Johannesburg"
+}
+
+### 35. Test Flutter-Compatible Route Response
+POST {{baseUrl}}/location/route
+Content-Type: application/json
+
+{
+  "origin": {
+    "latitude": -26.2041,
+    "longitude": 28.0473
+  },
+  "destination": {
+    "latitude": -26.2141,
+    "longitude": 28.0573
+  }
+}
+
+### 36. Test Flutter-Compatible Place Search Response
+GET {{baseUrl}}/location/places/search?q=Johannesburg&limit=5
+
+### 37. Test Flutter-Compatible Nearby Places Response
+GET {{baseUrl}}/location/places/nearby?latitude=-26.2041&longitude=28.0473&radius=1000&limit=10
+
+### 38. Test Flutter-Compatible Service Area Check Response
+POST {{baseUrl}}/location/service-area
+Content-Type: application/json
+
+{
+  "latitude": -26.2041,
+  "longitude": 28.0473
+}
+
+### 39. Test Flutter-Compatible Driver Location Response
+GET {{baseUrl}}/drivers/{{driverId}}/location
+Authorization: Bearer {{accessToken}}

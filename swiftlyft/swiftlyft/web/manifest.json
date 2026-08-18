@@ -1,0 +1,66 @@
+{
+    "name": "SwiftLyft - Your Journey, Elevated",
+    "short_name": "SwiftLyft",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#2563EB",
+    "theme_color": "#2563EB",
+    "description": "Premium luxury transportation service. Book your ride with style and comfort. Available in Johannesburg and Cape Town.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "categories": ["travel", "transportation", "lifestyle"],
+    "lang": "en",
+    "scope": "/",
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Book a Ride",
+            "short_name": "Book",
+            "description": "Quickly book your luxury ride",
+            "url": "/?action=book",
+            "icons": [
+                {
+                    "src": "icons/Icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "My Trips",
+            "short_name": "Trips",
+            "description": "View your trip history",
+            "url": "/?action=trips",
+            "icons": [
+                {
+                    "src": "icons/Icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ]
+}
